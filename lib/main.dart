@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'catfact.dart';
+import 'apiservices.dart';
 
 void main() {
   runApp(const CatFactApp());
@@ -17,20 +15,11 @@ class _CatFactAppState extends State<CatFactApp> {
   String _fact = "Press the button to get a cat fact!";
 
   Future<void> _fetchCatFact() async {
-    final url = Uri.parse('https://catfact.ninja/fact');
     try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-          final data = jsonDecode(response.body);
-          final catfact = Catfact.fromJson(data);
-          setState(() {
-            _fact = catfact.fact ?? "No fact found.";
-          });
-      } else {
-        setState(() {
-          _fact = "Error: ${response.statusCode}";
-        });
-      }
+      final catfact = await fetchCatFact();
+      setState(() {
+        _fact = catfact?.fact ?? "No fact found.";
+      });
     } catch (e) {
       setState(() {
         _fact = "Exception: $e";
@@ -66,7 +55,7 @@ class _CatFactAppState extends State<CatFactApp> {
               Card(
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(_fact, style: const TextStyle(fontSize: 18)),
+                  child: Text(_fact, style: const TextStyle(fontSize: 18)), //แสดงข้อมูล fact
                 ),
               ),
             ],

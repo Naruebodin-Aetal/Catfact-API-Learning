@@ -1,19 +1,18 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'catfact.dart';
 
-Future<void> main() async {
+Future<Catfact?> fetchCatFact() async {
   final url = Uri.parse('https://catfact.ninja/fact');
   try {
     final response = await http.get(url);
-
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      print("Cat Fact: ${data['fact']}");
-      print("Length: ${data['length']}");
+      return Catfact.fromJson(data);
     } else {
-      print("Error: ${response.statusCode}");
+      return null;
     }
   } catch (e) {
-    print("Exception: $e");
+    return null;
   }
 }
